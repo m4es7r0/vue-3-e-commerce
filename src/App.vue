@@ -41,13 +41,13 @@ const handleUpdateSortBy = (value: string) => {
 <template>
   <div class="container mx-auto my-5 bg-white rounded-xl shadow-xl">
     <Header :handleToggleCart="handleToggleCart" />
+    <Drawer v-if="cartIsOpen" :handleToggleCart="handleToggleCart" />
     <div class="p-10 space-y-8">
       <div class="flex justify-between items-center">
         <h1 class="text-3xl font-bold">Все кроссовки</h1>
         <FormSearch :options="sortOptions" :handleUpdateSortBy="handleUpdateSortBy" />
       </div>
       <CardList :sortBy="sortBy" :handleUpdateSortBy="handleUpdateSortBy" />
-      <Drawer v-if="cartIsOpen" :handleToggleCart="handleToggleCart" />
     </div>
   </div>
 </template>
