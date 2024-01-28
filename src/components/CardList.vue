@@ -1,12 +1,35 @@
 <script setup lang="ts">
-  import Card from './Card.vue';
+import { ref, watch } from 'vue';
+
+import { useQuery } from '@tanstack/vue-query'
+import { api } from '../api/index'
+
+import Card from './Card.vue';
+
+const props = defineProps<{
+  sortBy: string
+  handleUpdateSortBy: (value: string) => void
+}>()
+
+const { data, isPending, refetch } = useQuery({
+  queryKey: ['sneakers'],
+  queryFn: () => api.getSneakers({ sortBy: props.sortBy }),
+  refetchOnWindowFocus: false
+})
+
+const sneakersList = ref(data)
+
+watch(() => props.sortBy, () => {
+  refetch()
+})
+
 </script>
 
 <template>
   <div class="grid grid-cols-4 gap-4">
-      <Card img="public/sneakers/sneakers-1.jpg" :price="100" title="Мужские Кроссовки Nike Blazer Mid Suede"/>
-      <Card img="public/sneakers/sneakers-2.jpg" :price="100" title="Мужские Кроссовки Nike Blazer Mid Suede"/>
-      <Card img="public/sneakers/sneakers-3.jpg" :price="100" title="Мужские Кроссовки Nike Blazer Mid Suede"/>
-      <Card img="public/sneakers/sneakers-4.jpg" :price="100" title="Мужские Кроссовки Nike Blazer Mid Suede"/>
+    <div v-if="isPending" v-for="item in [...Array(12)]" :item="item" :key="item"
+      class="w-full h-[430px] p-8 bg-gray-100 rounded-xl">
+    </div>
+    <Card v-for="sneakers in sneakersList" :item="sneakers" :key="sneakers.id" :="sneakers" />
   </div>
 </template>
